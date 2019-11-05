@@ -492,13 +492,24 @@ $ bosh –e {director_name} vms
 ```
 ![PaaSTa_logsearch_vms_5.0]
 
-## <div id='19'/>3.5.	paasta-monitoring release 설치
+## <div id='19'/>3.5.	ppaasta-pinpoint-monitoring 설치
 
-PaaS-TA SaaS Application CPU, Memory, Thread , Response Time 정보를 수집을 위해서는 paasta-pinpoint-monitoring가 설치되어야 한다. 
+PaaS-TA SaaS 서비스는 Application CPU, Memory, Thread , Response Time 정보를 수집을 위해서는 paasta-pinpoint-monitoring가 설치되어야 한다. 
 자세한 설치 방법은 아래 링크를 참조하길 바랍니다.
 > **[설치 정보](https://github.com/PaaS-TA/PAAS-TA-PINPOINT-MONITORING-RELEASE)**
 
-## <div id='20'/>3.5.	PaaS-TA Monitoring 설치
+## <div id='19-1'/>3.6.	paasta-container-service 및 Prometheus Agent 설치
+
+PaaS-TA CaaS 서비스는 Kubernetes Cluster, Workload, Pod 및 Alarm 정보를 수집을 위하여 paasta-container-service에 Prometheus Agent가 설치되어야 한다. 
+```
+$ cd ~/workspace/paasta-5.0/deployment/service-deployment/paasta-container-service-2.0
+```
+
+### <div id='17'/>3.6.1.	manifests/paasta-container-service-vars-aws.yml
+Deployment YAML에서 사용하는 변수들을 서버 환경에 맞게 수정한다. 
+
+
+## <div id='20'/>3.7.	PaaS-TA Monitoring 설치
 
 PaaS 모니터링을 위해서 paasta-monitoring가 설치되어야 한다. 
 
