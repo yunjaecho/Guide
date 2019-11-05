@@ -679,9 +679,72 @@ instance_groups:
           url: ((redis_ip)):6379
           password: ((redis_password))
         paasta:
-          url: http://api.((system_domain))
+          apiurl: http://api.((system_domain))
+          uaaurl: https://uaa.((system_domain))
           username: ((paasta_username))
           password: ((paasta_password))
+
+- name: caas-monitoring-batch
+  azs: [z6]
+  instances: 1
+  vm_type: small
+  stemcell: default
+  networks:
+  - name: default
+  jobs:
+  - name: caas-monitoring-batch
+    release: paasta-monitoring
+    consumes:
+      influxdb: {from: influxdb}
+    properties:
+      caas-monitoring-batch:
+        db:
+          ip: ((mariadb_ip))
+          port: ((mariadb_port))
+          username: ((mariadb_username))
+          password: ((mariadb_password))
+        mail:
+          smtp:
+            url: ((smtp_url))
+            port: ((smtp_port))
+          sender:
+            name: ((mail_sender))
+            password: ((mail_password))
+          resource:
+            url: ((resource_url))
+          send: ((mail_enable))
+          tls: ((mail_tls_enable))
+
+- name: saas-monitoring-batch
+  azs: [z6]
+  instances: 1
+  vm_type: small
+  stemcell: default
+  networks:
+  - name: default
+  jobs:
+  - name: saas-monitoring-batch
+    release: paasta-monitoring
+    consumes:
+      influxdb: {from: influxdb}
+    properties:
+     saas-monitoring-batch:
+        db:
+          ip: ((mariadb_ip))
+          port: ((mariadb_port))
+          username: ((mariadb_username))
+          password: ((mariadb_password))
+        mail:
+          smtp:
+            url: ((smtp_url))
+            port: ((smtp_port))
+          sender:
+            name: ((mail_sender))
+            password: ((mail_password))
+          resource:
+            url: ((resource_url))
+          send: ((mail_enable))
+          tls: ((mail_tls_enable))
 
 - name: monitoring-web
   azs: [z6]
@@ -717,6 +780,17 @@ instance_groups:
           password: ((redis_password))
         time:
           gap: ((utc_time_gap))
+        prometheus:
+          url: ((prometheus_ip)):9090
+        kubernetes:
+          url: ((kubernetes_ip)):55780
+          token: ((kubernetes_token))
+        pinpoint:
+          url: ((pinpoint_ip)):8079
+        pinpointWas:
+          url: ((pinpoint_was_ip)):8080
+        caasbroker:
+          url: ((cassbroker_ip)):3334
 
 variables:
 - name: redis_password
@@ -761,6 +835,12 @@ bosh –e {director_name} -d paasta-monitoring deploy paasta-monitoring.yml  \
      -v utc_time_gap=9 \                 # utc time zone과 Client time zone과의 시간 차이
      -v monit_public_ip=xxx.xxx.xxx.xxx \ # 설치시 monitoring-web VM의 public ip
      -v system_domain={System_domain}    #PaaS-TA 설치시 설정한 System Domain
+     -v prometheus_ip=35.188.183.252 \
+     -v kubernetes_ip=211.251.238.234 \
+     -v pinpoint_ip=101.55.50.216 \
+     -v pinpoint_was_ip=10.1.81.123 \
+     -v cassbroker_ip=13.124.44.35 \
+     -v kubernetes_token=eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm........
 
 ```
 
@@ -775,7 +855,8 @@ admin_password: xxxxxxxxx
 4)	smtp_url: smtp Server ip (PaaS-TA를 설치한 시스템에서 사용가능한 smtp 서버 IP
 5)	monit_public_ip: monitoring web의 public ip로 외부에서 모니터링 화면에 접속하기 위해 필요한 외부 ip(public ip 필요)
 6)	system_domain: paasta를 설치 할때 설정한 system_domain을 입력한다.
-
+7) pinpoint_ip는 설지한 pinpoint_haproxy_webui public ip를 지정한다.
+8) pinpoint_was_ip는 설치한 pinpoint_haproxy_webui 내부 ip를 지정한다
 
 Monit-deploy.sh을 실행하여 paasta-monitoring을 설치 한다
 ```
