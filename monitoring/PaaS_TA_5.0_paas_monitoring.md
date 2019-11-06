@@ -543,7 +543,7 @@ $  curl localhost:8080/api
 PaaS 모니터링을 위해서 paasta-monitoring가 설치되어야 한다. 
 
 ```
-$ cd ~/workspace/paasta-5.0/deployment/service-deployment/paasta-monitoring
+$ cd ~/workspace/paasta-5.0/deployment/paasta-deployment-monitoring/paasta-monitoring
 ```
 
 ### <div id='21'/>3.5.1.	paasta-monitoring.yml
@@ -835,8 +835,8 @@ update:
 
 ```
 
-### <div id='22'/>3.5.2.	monit-deploy.sh
-monit-deploy.sh의 –v 의 inception_os_user_name, system_domain 및 director_name을 시스템 상황에 맞게 설정한다.
+### <div id='22'/>3.5.2.	deploy-paasta-monitoring.sh
+deploy-paasta-monitoring.sh의 –v 의 inception_os_user_name, system_domain 및 director_name을 시스템 상황에 맞게 설정한다.
 
 ```
 bosh –e {director_name} -d paasta-monitoring deploy paasta-monitoring.yml  \
@@ -896,8 +896,8 @@ admin_password: xxxxxxxxx
 
 Monit-deploy.sh을 실행하여 paasta-monitoring을 설치 한다
 ```
-$ cd ~/workspace/paasta-5.0/deployment/service-deployment/paasta-monitoring
-$ monit-deploy.sh
+$ cd ~/workspace/paasta-5.0/deployment/paasta-deployment-monitoring/paasta-monitoring
+$ deploy-paasta-monitoring.sh
 ```
 
 설치 완료후 PaaS-TA 모니터링이 설치 완료 되었음을 확인한다.
