@@ -492,7 +492,7 @@ $ bosh –e {director_name} vms
 ```
 ![PaaSTa_logsearch_vms_5.0]
 
-## <div id='19'/>3.5.	ppaasta-pinpoint-monitoring 설치
+## <div id='19'/>3.5.	paasta-pinpoint-monitoring 설치
 
 PaaS-TA SaaS 서비스는 Application CPU, Memory, Thread , Response Time 정보를 수집을 위해서는 paasta-pinpoint-monitoring가 설치되어야 한다. 
 자세한 설치 방법은 아래 링크를 참조하길 바랍니다.
