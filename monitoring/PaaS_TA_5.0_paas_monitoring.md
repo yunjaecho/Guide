@@ -19,7 +19,7 @@
         *  [logsearch-deployment.yml](#17)
         *  [deploy.sh](#18)
     * [paasta-pinpoint-monitoring release 설치](#19)    
-    * [paasta-container-service release 설치](#19-1)
+    * [paasta-container-service release 설치 및 Prometheus Agent 정보확인](#19-1)
     * [PaaS-TA Monitoring 설치](#20)
         *  [paasta-monitoring.yml](#21)
         *  [monit-deploy.sh](#22)
@@ -499,7 +499,7 @@ PaaS-TA SaaS 서비스는 Application CPU, Memory, Thread , Response Time 정보
 자세한 설치 방법은 아래 링크를 참조하길 바랍니다.
 > **[설치 정보](https://github.com/PaaS-TA/PAAS-TA-PINPOINT-MONITORING-RELEASE)**
 
-## <div id='19-1'/>3.6.	paasta-container-service 및 Prometheus Agent 정보확인
+## <div id='19-1'/>3.6.	paasta-container-service 설치 및 Prometheus Agent 정보확인
 
 PaaS-TA CaaS 서비스는 Kubernetes Cluster, Workload, Pod 및 Alarm 정보를 수집을 위하여 paasta-container-service에 Prometheus Agent가 설치되어야 한다. 
 ```
