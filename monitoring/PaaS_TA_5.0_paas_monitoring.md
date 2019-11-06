@@ -889,9 +889,8 @@ admin_password: xxxxxxxxx
 9) prometheus_ip는 Kubernetes의 prometheus-prometheus-prometheus-oper-prometheus-0 Pod의 Node ip를 지정한다.
     <br>
    참조) [3.6.4 prometheus-prometheus-prometheus-oper-prometheus-0 POD의 Node IP를 확인한다.](#19-4)   
-10) kubernetes_ip는 Kubernetes의 서비스 API ip를 지정한다.
-   
-   참조) [3.6.5 Kubernetes API URL(serverAddress)를 확인한다..](#19-5)
+10) kubernetes_ip는 Kubernetes의 서비스 API ip를 지정한다.   
+   참조) [3.6.5 Kubernetes API URL(serverAddress)를 확인한다.](#19-5)
 11) kubernetes_token는 Kubernetes 서비스 API를 Request 호출할 수 있도록 Header에 설정하는 인증 토큰값을 지정한다. 
 12) cassbroker_ip는 CaaS 서비스 로그인 인증 처리를 위한 API ip를 지정한다.       
 
