@@ -498,7 +498,7 @@ PaaS-TA SaaS 서비스는 Application CPU, Memory, Thread , Response Time 정보
 자세한 설치 방법은 아래 링크를 참조하길 바랍니다.
 > **[설치 정보](https://github.com/PaaS-TA/PAAS-TA-PINPOINT-MONITORING-RELEASE)**
 
-## <div id='19-1'/>3.6.	paasta-container-service 및 Prometheus Agent 설치
+## <div id='19-1'/>3.6.	paasta-container-service 및 Prometheus Agent 정보확인
 
 PaaS-TA CaaS 서비스는 Kubernetes Cluster, Workload, Pod 및 Alarm 정보를 수집을 위하여 paasta-container-service에 Prometheus Agent가 설치되어야 한다. 
 ```
@@ -531,7 +531,7 @@ $  /var/vcap/packages/kubernetes/bin/kubectl get nodes -o wide
 ```
 ![PaaSTa_paasta_container_service_nodes]
 
-### <div id='19-5'/>3.6.5	Kubernetes API URL를 확인한다.
+### <div id='19-5'/>3.6.5	Kubernetes API URL(serverAddress)를 확인한다.
 ```
 $  curl localhost:8080/api
 ```
