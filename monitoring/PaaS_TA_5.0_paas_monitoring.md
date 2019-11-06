@@ -518,18 +518,25 @@ $  ./deploy-{서비스프로바이더}.sh
 ### <div id='19-4'/>3.6.3	설치 완료후 paasta-container-service 서비스 설치 완료 되었음을 확인한다. 
 ![PaaSTa_paasta_container_service_vms]
 
-### <div id='19-4'/>3.6.3	Kubernetes Prometheus API를 주소를 확인 하기 위햐여 Prometheus Pods 정보를 확인한다.  
+### <div id='19-4'/>3.6.3	Kubernetes Prometheus Pods 정보를 확인한다.  
 ```
 $  bosh -e {director_name} ssh -d paaata-container-service master
 $  /var/vcap/packages/kubernetes/bin/kubectl get pods --all-namespaces -o wide
 ```
 ![PaaSTa_paasta_container_service_pods]
 
-### <div id='19-4'/>3.6.4	Kubernetes Node 정보를 조회 하여 prometheus-prometheus-prometheus-oper-prometheus-0 POD의 Node와 일치하는 IP를 확인한다.
+### <div id='19-4'/>3.6.4	prometheus-prometheus-prometheus-oper-prometheus-0 POD의 Node IP를 확인한다.
 ```
 $  /var/vcap/packages/kubernetes/bin/kubectl get nodes -o wide
 ```
 ![PaaSTa_paasta_container_service_nodes]
+
+### <div id='19-5'/>3.6.5	Kubernetes API URL를 확인한다.
+```
+$  curl localhost:8080/api
+```
+![PaaSTa_paasta_container_service_kubernetes_api]
+
 
 ## <div id='20'/>3.7.	PaaS-TA Monitoring 설치
 
@@ -929,4 +936,5 @@ member_info에는 사용자가 사용할 ID/PWD를 입력하고 하단 paas-info
 [PaaSTa_paasta_container_service_vms]:./images/paasta-container-service-vms.png
 [PaaSTa_paasta_container_service_pods]:./images/paasta-container-service-pods.png
 [PaaSTa_paasta_container_service_nodes]:./images/paasta-container-service-nodes.png
+[PaaSTa_paasta_container_service_kubernetes_api]:./images/paasta-container-service-kubernetes-api.png
 
