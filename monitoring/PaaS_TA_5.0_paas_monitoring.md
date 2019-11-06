@@ -653,9 +653,9 @@ $  curl localhost:8080/api
 
 ### <div id='19-6'/>3.6.6	Kubernetes API Request 호출시 Header(Authorization) 인증을 위한 Token값 확인한다. 
 ```
-$  curl localhost:8080/api
+$  /var/vcap/packages/kubernetes/bin/kubectl -n kube-system describe secret $(/var/vcap/packages/kubernetes/bin/kubectl -n kube-system get secret | grep monitoring-admin | awk '{print $1}')
 ```
-![PaaSTa_paasta_container_service_kubernetes_api]
+![PaaSTa_paasta_container_service_kubernetes_token]
 
 
 ## <div id='20'/>3.7.	PaaS-TA Monitoring 설치
@@ -1064,4 +1064,5 @@ member_info에는 사용자가 사용할 ID/PWD를 입력하고 하단 paas-info
 [PaaSTa_paasta_container_service_pods]:./images/paasta-container-service-pods.png
 [PaaSTa_paasta_container_service_nodes]:./images/paasta-container-service-nodes.png
 [PaaSTa_paasta_container_service_kubernetes_api]:./images/paasta-container-service-kubernetes-api.png
+[PaaSTa_paasta_container_service_kubernetes_token]./images/paasta-container-service-kubernetes-token.png
 
