@@ -1064,5 +1064,5 @@ member_info에는 사용자가 사용할 ID/PWD를 입력하고 하단 paas-info
 [PaaSTa_paasta_container_service_pods]:./images/paasta-container-service-pods.png
 [PaaSTa_paasta_container_service_nodes]:./images/paasta-container-service-nodes.png
 [PaaSTa_paasta_container_service_kubernetes_api]:./images/paasta-container-service-kubernetes-api.png
-[PaaSTa_paasta_container_service_kubernetes_token]./images/paasta-container-service-kubernetes-token.png
+[PaaSTa_paasta_container_service_kubernetes_token]:./images/paasta-container-service-kubernetes-token.png
 
