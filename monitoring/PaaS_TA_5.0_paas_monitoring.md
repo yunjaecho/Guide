@@ -1011,8 +1011,9 @@ admin_password: xxxxxxxxx
    참조) [3.6.4 prometheus-prometheus-prometheus-oper-prometheus-0 POD의 Node IP를 확인한다.](#19-4)   
 10) kubernetes_ip는 Kubernetes의 서비스 API ip를 지정한다.   
    참조) [3.6.5 Kubernetes API URL serverAddress를 확인한다.](#19-5)
-11) kubernetes_token는 Kubernetes 서비스 API를 Request 호출할 수 있도록 Header에 설정하는 인증 토큰값을 지정한다. 
-12) cassbroker_ip는 CaaS 서비스 로그인 인증 처리를 위한 API ip를 지정한다.       
+11) kubernetes_token는 Kubernetes 서비스 API를 Request 호출할 수 있도록 Header에 설정하는 인증 토큰값을 지정한다.
+   참조) [3.6.6 Kubernetes API Request 호출시 Header(Authorization) 인증을 위한 Token값 확인한다.](#19-6) 
+12) cassbroker_ip는 CaaS 서비스 로그인 인증 처리를 위한 API ip를 지정한다.        
 
 Monit-deploy.sh을 실행하여 paasta-monitoring을 설치 한다
 ```
