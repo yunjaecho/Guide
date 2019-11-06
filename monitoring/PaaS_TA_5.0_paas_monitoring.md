@@ -505,9 +505,31 @@ PaaS-TA CaaS 서비스는 Kubernetes Cluster, Workload, Pod 및 Alarm 정보를 
 $ cd ~/workspace/paasta-5.0/deployment/service-deployment/paasta-container-service-2.0
 ```
 
-### <div id='17'/>3.6.1.	manifests/paasta-container-service-vars-aws.yml
+### <div id='19-2'/>3.6.1	manifests/paasta-container-service-vars-aws.yml
 Deployment YAML에서 사용하는 변수들을 서버 환경에 맞게 수정한다. 
 
+### <div id='19-3'/>3.6.2	paasta-container-service 설치
+Cloud Provider 환경에 맟는 deploy shell 스크립트 실행한다. 
+
+```
+$  ./deploy-{서비스프로바이더}.sh
+```
+
+### <div id='19-4'/>3.6.3	설치 완료후 paasta-container-service 서비스 설치 완료 되었음을 확인한다. 
+![PaaSTa_paasta_container_service_vms]
+
+### <div id='19-4'/>3.6.3	Kubernetes Prometheus API를 주소를 확인 하기 위햐여 Prometheus Pods 정보를 확인한다.  
+```
+$  bosh -e {director_name} ssh -d paaata-container-service master
+$  /var/vcap/packages/kubernetes/bin/kubectl get pods --all-namespaces -o wide
+```
+![PaaSTa_paasta_container_service_pods]
+
+### <div id='19-4'/>3.6.4	Kubernetes Node 정보를 조회 하여 prometheus-prometheus-prometheus-oper-prometheus-0 POD의 Node와 일치하는 IP를 확인한다.
+```
+$  /var/vcap/packages/kubernetes/bin/kubectl get nodes -o wide
+```
+![PaaSTa_paasta_container_service_nodes]
 
 ## <div id='20'/>3.7.	PaaS-TA Monitoring 설치
 
@@ -857,6 +879,7 @@ admin_password: xxxxxxxxx
 6)	system_domain: paasta를 설치 할때 설정한 system_domain을 입력한다.
 7) pinpoint_ip는 설지한 pinpoint_haproxy_webui public ip를 지정한다.
 8) pinpoint_was_ip는 설치한 pinpoint_haproxy_webui 내부 ip를 지정한다
+9) prometheus_ip는 Kubernetes의 prometheus-prometheus-prometheus-oper-prometheus-0 Pod의 Node IP  
 
 Monit-deploy.sh을 실행하여 paasta-monitoring을 설치 한다
 ```
@@ -902,4 +925,8 @@ member_info에는 사용자가 사용할 ID/PWD를 입력하고 하단 paas-info
 [PaaSTa_monitoring_login_5.0]:./images/monit_login_5.0.png
 [PaaSTa_monitoring_join_5.0]:./images/member_join_5.0.png
 [PaaSTa_monitoring_main_dashboard_5.0]:./images/monit_main_5.0.png
+
+[PaaSTa_paasta_container_service_vms]:./images/paasta-container-service-vms.png
+[PaaSTa_paasta_container_service_pods]:./images/paasta-container-service-pods.png
+[PaaSTa_paasta_container_service_nodes]:./images/paasta-container-service-nodes.png
 
