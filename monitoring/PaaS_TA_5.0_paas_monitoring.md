@@ -781,9 +781,9 @@ instance_groups:
         time:
           gap: ((utc_time_gap))
         prometheus:
-          url: ((prometheus_ip)):9090
+          url: ((prometheus_ip)):30090
         kubernetes:
-          url: ((kubernetes_ip)):55780
+          url: ((kubernetes_ip)):8443
           token: ((kubernetes_token))
         pinpoint:
           url: ((pinpoint_ip)):8079
