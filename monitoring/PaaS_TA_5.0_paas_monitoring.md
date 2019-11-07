@@ -863,6 +863,8 @@ instance_groups:
             url: ((resource_url))
           send: ((mail_enable))
           tls: ((mail_tls_enable))
+        public:
+          url: ((monit_public_ip)):8080
 
 - name: saas-monitoring-batch
   azs: [z6]
@@ -894,6 +896,8 @@ instance_groups:
             url: ((resource_url))
           send: ((mail_enable))
           tls: ((mail_tls_enable))
+        pinpoint:
+          url: ((pinpoint_ip)):8079
 
 - name: monitoring-web
   azs: [z6]
@@ -940,6 +944,8 @@ instance_groups:
           url: ((pinpoint_was_ip)):8080
         caasbroker:
           url: ((cassbroker_ip)):3334
+        system:
+          type: ((system_type))
 
 variables:
 - name: redis_password
@@ -984,6 +990,7 @@ bosh –e {director_name} -d paasta-monitoring deploy paasta-monitoring.yml  \
      -v utc_time_gap=9 \                 # utc time zone과 Client time zone과의 시간 차이
      -v monit_public_ip=xxx.xxx.xxx.xxx \ # 설치시 monitoring-web VM의 public ip
      -v system_domain={System_domain}    #PaaS-TA 설치시 설정한 System Domain
+     -v system_type=PaaS,CaaS,SaaS \     # 모니터링에서 사용할 서비스항목 IaaS,SaaS,PaaS,CaaS ','기준으로 입력 전체 사용시 ALL
      -v prometheus_ip=35.188.183.252 \
      -v kubernetes_ip=211.251.238.234 \
      -v pinpoint_ip=101.55.50.216 \
