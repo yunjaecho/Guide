@@ -484,7 +484,7 @@ deploy.sh을 실행하여 logsearch를 설치 한다.
 
 ```
 $ cd ~/workspace/paasta-5.0/deployment/service-deployment/logsearch
-$ deploy.sh 
+$ sh deploy.sh 
 ```
 
 설치 완료후 logsearch가 설치 완료 되었음을 확인한다.
