@@ -107,10 +107,10 @@ SaaS 서비스는 내부적으로 메트릭스 정보를 수집 하는 PINPOINT 
 
 ## <div id='15'/>3.3. PaaS-Ta Monitoring 설치환경
 
-~/workspace/paasta-5.0/deployment/service-deployment 이하 디렉토리에는 logsearch, pasta-monitoring 디렉토리가 존재한다. Logsearch는 logAgent에서 발생한 Log정보를 수집하여 저장하는 Deployment이다. Pasta-monitoring은 PaaS-TA VM에서 발생한 Metric정보를 수집하여 모니터링을 실행한다.
+~/workspace/paasta-5.0/deployment/paasta-deployment-monitoring 이하 디렉토리에는 paasta-monitoring, paasta-pinpoint-monitoring 디렉토리가 존재한다. Logsearch는 logAgent에서 발생한 Log정보를 수집하여 저장하는 Deployment이다. Pasta-monitoring은 PaaS-TA VM에서 발생한 Metric정보를 수집하여 모니터링을 실행한다.
 
 ```
-$ cd ~/workspace/paasta-5.0/deployment/service-deployment
+$ cd ~/workspace/paasta-5.0/deployment/paasta-deployment-monitoring
 ```
 
 ## <div id='16'/>3.4.	Logsearch 설치
@@ -118,7 +118,7 @@ $ cd ~/workspace/paasta-5.0/deployment/service-deployment
 PaaS-TA VM Log수집을 위해서는 logsearch가 설치되어야 한다. 
 
 ```
-$ cd ~/workspace/paasta-5.0/deployment/service-deployment/logsearch
+$ cd ~/workspace/paasta-5.0/deployment/paasta-deployment-monitoring/paasta-monitoring
 ```
 
 ### <div id='17'/>3.4.1.	logsearch-deployment.yml
@@ -456,10 +456,10 @@ variables:
 
 releases:
 - name: logsearch
-  url: file:///home/((inception_os_user_name))/workspace/paasta-5.0/release/monitoring/logsearch-boshrelease-209.0.1.tgz 
+  url: file:///home/((inception_os_user_name))/workspace/paasta-5.0/release/paasta-monitoring/logsearch-boshrelease-209.0.1.tgz
   version: "209.0.1"
 - name: logsearch-for-cloudfoundry
-  url: file:///home/((inception_os_user_name))/workspace/paasta-5.0/release/monitoring/logsearch-for-cloudfoundry-207.0.1.tgz
+  url: file:///home/((inception_os_user_name))/workspace/paasta-5.0/release/paasta-monitoring/logsearch-for-cloudfoundry-207.0.1.tgz
   version: "207.0.1"
 stemcells:
 - alias: default
@@ -467,7 +467,7 @@ stemcells:
   version: "315.36"
 ```
 
-### <div id='18'/>3.4.2. deploy.sh
+### <div id='18'/>3.4.2. deploy-logsearch.sh
 
 deploy.sh의 –v 의 inception_os_user_name, router_ip, system_domain 및 director_name을 시스템 상황에 맞게 설정한다.
 system_domain은 paasta 설치시 설정했던 system_domain을 입력하면 된다.
@@ -483,8 +483,8 @@ Bosh –e {director_name} -d logsearch deploy logsearch-deployment.yml \
 deploy.sh을 실행하여 logsearch를 설치 한다.
 
 ```
-$ cd ~/workspace/paasta-5.0/deployment/service-deployment/logsearch
-$ sh deploy.sh 
+$ cd ~/workspace/paasta-5.0/deployment/paasta-deployment-monitoring/paasta-monitoring
+$ sh deploy-logsearch.sh
 ```
 
 설치 완료후 logsearch가 설치 완료 되었음을 확인한다.
