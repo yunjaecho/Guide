@@ -474,7 +474,7 @@ system_domain은 paasta 설치시 설정했던 system_domain을 입력하면 된
 router_ip는 ls-router가 설치된 azs에서 정의한 cider값의 적당한 IP를 지정한다.
 
 ```
-Bosh –e {director_name} -d logsearch deploy logsearch-deployment.yml \
+bosh –e {director_name} -d logsearch deploy logsearch-deployment.yml \
   -v inception_os_user_name=ubuntu \  # home user명 (release file path와 연관성 있음. /home/ubuntu/paasta-5.0 이하 release 파일들의 경로 설정)
   -v router_ip=10.20.50.34 \   # 배포한 ls-router VM의 private ip
   -v system_domain={system_domain}  #PaaS-TA 설치시 설정한 System Domain
