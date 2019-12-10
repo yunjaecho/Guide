@@ -1468,10 +1468,10 @@ https://github.com/monasca/monasca-docker
       adminAuthMethod: password                                  #사용자 인증 방식
       adminUser: monasca-agent                                    #cross-tenant 사용자 아이디
       adminPassword: cfmonit                                       #cross-tenant 사용자 패스워드
-      adminProjectId: 9c1a27e20412473b843dbf32bdec2390           #관리 Project guid 정보
-      adminProjectName: "admin"                                     #관리 Project 이름
-      adminUserDomainId: 9c6e016d8b3642109655740c26e5eb57      #domain guid 정보
-      adminUserDomainName: 9c6e016d8b3642109655740c26e5eb57  #domain guid 정보
+      adminProjectId: <adminProjectId>           #관리 Project guid 정보
+      adminProjectName: "<adminProjectName>"                                     #관리 Project 이름
+      adminUserDomainId: <adminUserDomainId>      #domain guid 정보
+      adminUserDomainName: <adminUserDomainName>  #domain guid 정보
       adminProjectDomainId:
       adminProjectDomainName:
       adminToken:
