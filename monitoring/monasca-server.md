@@ -120,7 +120,7 @@ $ git clone https://github.com/monasca/monasca-docker.git
 ```  
 
 - Monasa-Docker docker-compose.yml 파일 변경 
-...  
+```
 $ cd monasca-docker
 $ vi docker-compose.yml
 ---
@@ -394,196 +394,193 @@ services:
     ports:
       - "8125/udp"
  ...
-...
+```
     
 - Monasca-Docker Server 설치 및 시작
-<pre>    
-    $ sudo docker-compose up -d
-</pre>
+```   
+$ sudo docker-compose up -d
+```
 ![](images/Monasca/monasca-docker-ps.png)
 
 # 5. Elasticserarch 서버 설치  <div id='5.'/>
 - dependencies 설치
-<pre>    
-    $ sudo apt-get update
-    $ sudo apt-get install openjdk-8-jdk
-</pre>
+```    
+$ sudo apt-get update
+$ sudo apt-get install openjdk-8-jdk
+```
 
 - Elasticsearch repository 등록
-<pre>    
-    $ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-    $ echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-5.x.list
-</pre>
+```    
+$ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+$ echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-5.x.list
+```
 
 - Elasticsearch 설치
-<pre>
-    $ sudo apt-get update
-    $ sudo apt-get install -y elasticsearch
-</pre>     
+```
+$ sudo apt-get update
+$ sudo apt-get install -y elasticsearch
+```     
     
 - 사용자 그룹 추가 - Elasticsearch
-<pre>    
-    $ sudo usermod -a -G elasticsearch “사용자 계정”
-</pre>        
+```    
+$ sudo usermod -a -G elasticsearch “사용자 계정”
+```        
     
 - Elasticsearch configuration 파일 수정
-
-<pre>    
-    $ cd /etc/elasticsearch && sudo vi elasticsearch.yml
-    ---
-    ...
-    # Lock the memory on startup:
-    bootstrap.memory_lock: true
-    ...
-    # Set the bind address to a specific IP (IPv4 or IPv6):
-    network.host: 0.0.0.0
+```    
+$ cd /etc/elasticsearch && sudo vi elasticsearch.yml
+---
+...
+# Lock the memory on startup:
+bootstrap.memory_lock: true
+...
+# Set the bind address to a specific IP (IPv4 or IPv6):
+network.host: 0.0.0.0
     
-    # Set a custom port for HTTP:
-    http.port: 9200
-    ...
-</pre>
+# Set a custom port for HTTP:
+http.port: 9200
+...
+```
     
 - Elasticsearch service 파일 수정
-
-<pre>    
-    $ sudo vi /usr/lib/systemd/system/elasticsearch.service
-    ...
-    # Specifies the maximum number of bytes of memory that may be locked into RAM
-    # Set to "infinity" if you use the 'bootstrap.memory_lock: true' option
-    # in elasticsearch.yml and 'MAX_LOCKED_MEMORY=unlimited' in /etc/default/elasticsearch
-    LimitMEMLOCK=infinity
-    ...
-</pre>
+```    
+$ sudo vi /usr/lib/systemd/system/elasticsearch.service
+...
+# Specifies the maximum number of bytes of memory that may be locked into RAM
+# Set to "infinity" if you use the 'bootstrap.memory_lock: true' option
+# in elasticsearch.yml and 'MAX_LOCKED_MEMORY=unlimited' in /etc/default/elasticsearch
+LimitMEMLOCK=infinity
+...
+```
 
 - Elasticsearch default 파일 수정
-
-<pre>
-    $ sudo vi /etc/default/elasticsearch
-    ...
-    # The maximum number of bytes of memory that may be locked into RAM
-    # Set to "unlimited" if you use the 'bootstrap.memory_lock: true' option
-    # in elasticsearch.yml.
-    # When using Systemd, the LimitMEMLOCK property must be set
-    # in /usr/lib/systemd/system/elasticsearch.service
-    MAX_LOCKED_MEMORY=unlimited
-    ...
-</pre>    
+```
+$ sudo vi /etc/default/elasticsearch
+...
+# The maximum number of bytes of memory that may be locked into RAM
+# Set to "unlimited" if you use the 'bootstrap.memory_lock: true' option
+# in elasticsearch.yml.
+# When using Systemd, the LimitMEMLOCK property must be set
+# in /usr/lib/systemd/system/elasticsearch.service
+MAX_LOCKED_MEMORY=unlimited
+...
+```    
 
 - Elasticsearch 서비스 시작
-<pre>    
-    $ sudo service elasticsearch start
-</pre>
+```    
+$ sudo service elasticsearch start
+```
     
 - Elasticserarch 서버 가동 여부 확인
-<pre>    
-    $ netstat -plntu | grep 9200
-</pre>
+```    
+$ netstat -plntu | grep 9200
+```
 ![](images/Monasca/monasca-elasticsearch-ps.png)
 
 - mlockall 정보가 “enabled” 되었는지 확인
-<pre>    
-    $ curl -XGET 'localhost:9200/_nodes?filter_path=**.mlockall&pretty'
-</pre>
+```    
+$ curl -XGET 'localhost:9200/_nodes?filter_path=**.mlockall&pretty'
+```
 ![](images/Monasca/monasca-elasticsearch-mlockall.png)
     
 
 # 6.  logstash 설치  <div id='6.'/>
 - logstash 설치
-<pre>    
-    $ sudo apt-get install -y logstash
-</pre>
+```    
+$ sudo apt-get install -y logstash
+```
 
 - /etc/hosts 파일 수정
-<pre>    
-    $ sudo vi /etc/hosts
-    ---
-     ...
-    “private network ip”  “hostname”
-    ex) 192.168.0.103   host logstash elasticsearch
-     ...
-</pre>
+```    
+$ sudo vi /etc/hosts
+---
+...
+“private network ip”  “hostname”
+ex) 192.168.0.103   host logstash elasticsearch
+...
+```
 
 - SSL certificate 파일 생성
-<pre>
-    $ cd /etc/logstash
-    $ sudo openssl req -subj /CN=”hostaname” -x509 -days 3650 -batch -nodes -newkey rsa:4096 -keyout logstash.key -out logstash.crt
-</pre>            
+```
+$ cd /etc/logstash
+$ sudo openssl req -subj /CN=”hostaname” -x509 -days 3650 -batch -nodes -newkey rsa:4096 -keyout logstash.key -out logstash.crt
+```
 
 - filebeat-input.conf 파일 생성
-<pre>
-    $ cd /etc/logstash
-    $ sudo vi conf.d/filebeat-input.conf
-    ---
-    ...
-    input {
-       beats {
-         port => 5443
-         type => syslog
-         ssl => true
-         ssl_certificate => "/etc/logstash/logstash.crt"
-         ssl_key => "/etc/logstash/logstash.key"
-       }
-    }
-    ...
-</pre>
+```
+$ cd /etc/logstash
+$ sudo vi conf.d/filebeat-input.conf
+---
+...
+input {
+   beats {
+     port => 5443
+     type => syslog
+     ssl => true
+     ssl_certificate => "/etc/logstash/logstash.crt"
+     ssl_key => "/etc/logstash/logstash.key"
+   }
+}
+...
+```
 
 - syslog-filter.conf 파일 생성
-<pre>
-    $ cd /etc/logstash
-    $ sudo vi conf.d/syslog-filter.conf
-    ---
-    ...
-    filter {
-          if [type] == "syslog" {
-            grok {
-              match => { "message" => "%{SYSLOGTIMESTAMP:syslog_timestamp} %{SYSLOGHOST:syslog_hostname} %{DATA:syslog_program}(?:\[%{POSINT:syslog_pid}\])?: %{GREEDYDATA:syslog_message}" }
-              add_field => [ "received_at", "%{@timestamp}" ]
-              add_field => [ "received_from", "%{host}" ]
-            }
-            date {
-              match => [ "syslog_timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss" ]
-            }
-          }
+```
+$ cd /etc/logstash
+$ sudo vi conf.d/syslog-filter.conf
+---
+...
+filter {
+      if [type] == "syslog" {
+        grok {
+          match => { "message" => "%{SYSLOGTIMESTAMP:syslog_timestamp} %{SYSLOGHOST:syslog_hostname} %{DATA:syslog_program}(?:\[%{POSINT:syslog_pid}\])?: %{GREEDYDATA:syslog_message}" }
+          add_field => [ "received_at", "%{@timestamp}" ]
+          add_field => [ "received_from", "%{host}" ]
         }
-    ...
-</pre>
+        date {
+          match => [ "syslog_timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss" ]
+        }
+      }
+    }
+...
+```
 
 - output-elasticsearch.conf 파일 생성
-<pre>
-    $ cd /etc/logstash
-    $ sudo vi conf.d/output-elasticsearch.conf
-    ---
-    ...
-    output {
-          elasticsearch { hosts => ["”your elastic ip”:9200"]    # 설치된 환경의 IP 정보
-            hosts => "”your elastic ip”:9200"                 # 설치된 환경의 IP 정보
-            manage_template => false
-            index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
-            document_type => "%{[@metadata][type]}"
-          }
-        }    
-    ...
-</pre>
+```
+$ cd /etc/logstash
+$ sudo vi conf.d/output-elasticsearch.conf
+---
+...
+output {
+      elasticsearch { hosts => ["”your elastic ip”:9200"]    # 설치된 환경의 IP 정보
+        hosts => "”your elastic ip”:9200"                 # 설치된 환경의 IP 정보
+        manage_template => false
+        index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
+        document_type => "%{[@metadata][type]}"
+      }
+    }    
+...
+```
 
 - logstash 서비스 시작
-<pre>
-    $ sudo service logstash start
-</pre>
+```
+$ sudo service logstash start
+```
 
 - logstash 서비스 확인
-<pre>
-    $ sudo service logstash start
-</pre>
+```
+$ sudo service logstash start
+```
 ![](images/Monasca/monasca-logstash-ps.png)
 
 # 14. Reference : Cross-Project(Tenant) 사용자 추가 및 권한 부여  <div id='14.'/>
 Openstack 기반으로 생성된 모든 Project(Tenant)의 정보를 하나의 계정으로 수집 및 조회하기 위해서는 Cross-Tenant 사용자를 생성하여, 각각의 Project(Tenant)마다 조회할 수 있도록 멤버로 등록한다.
 Openstack Cli를 이용하여 Cross-Tenant 사용자를 생성한 후, Openstack Horizon 화면으로 통해 각각의 프로젝트 사용자 정보에 생성한 Cross-Tenant 사용자 및 권한을 부여한다.
 1. Cross-Tenant 사용자 생성
-<pre>    
+```    
     $ openstack user create --domain default --password-prompt monasca-agent
     $ openstack role create monitoring-delegate
-</pre>    
+```    
     
 2. Project 사용자 추가
 ![](images/Monasca/14.1.png)
