@@ -187,9 +187,9 @@ https://github.com/monasca/monasca-docker
           MONASCA_MONITORING: "true"
           MONASCA_LOG_MONITORING: "false"
           OS_AUTH_URL: http://125.129.139.99:25000/v3
-          OS_USERNAME: admin
-          OS_PASSWORD: openstack
-          OS_PROJECT_NAME: admin
+          OS_USERNAME: <OS_USERNAME>
+          OS_PASSWORD: <OS_PASSWORD>
+          OS_PROJECT_NAME: <OS_PROJECT_NAME>
         cap_add:
           - FOWNER
         volumes:
