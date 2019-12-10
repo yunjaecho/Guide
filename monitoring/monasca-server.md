@@ -55,10 +55,12 @@ https://github.com/monasca/monasca-docker
    
 ※ 설치 전 사전에 설치되어 있어야 하는 프로그램<br>
 - install git
-<pre>    
+```
+```   
 sudo apt-get update
 sudo apt-get install -y git      
-</pre>
+```
+```
 
 - install python
 <pre>         
