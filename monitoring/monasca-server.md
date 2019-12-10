@@ -1423,7 +1423,6 @@ mlockall 정보가 “enabled” 되었는지 확인
       }
     }    
 </pre>    
-
 - logstash 서비스 시작 파일 생성
 <pre>
     $ sudo service logstash start
