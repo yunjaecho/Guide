@@ -61,34 +61,35 @@ sudo apt-get install -y git
 ```
 
 - install python
-<pre>         
-    sudo apt-get install python-keystoneclient
-</pre>    
+```        
+sudo apt-get install python-keystoneclient
+```    
        
 
 # 3.  docker 설치  <div id='3.'/>
 - Docker Key 등록
-<pre>       
- $ sudo apt update
- $ sudo apt install apt-transport-https ca-certificates curl software-properties-common
- $ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add –
-</pre>     
+```       
+$ sudo apt update
+$ sudo apt install apt-transport-https ca-certificates curl software-properties-common
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add –
+```     
 
 - Docker repository 정보 등록
-<pre>
-    $ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
-    $ sudo apt update
-    $ apt-cache policy docker-ce
-</pre>    
+```
+$ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+$ sudo apt update
+$ apt-cache policy docker-ce
+```    
     
 - Docker 설치
-<pre>  
-    $ sudo systemctl status docker
-</pre> 
+```  
+$ sudo systemctl status docker
+``` 
 
 - Docker 설치 확인
-<pre>  
+``` 
     $ sudo apt install docker-ce
+   
     ...
     docker.service - Docker Application Container Engine
     Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
@@ -98,8 +99,8 @@ sudo apt-get install -y git
       Tasks: 10
      CGroup: /system.slice/docker.service
                └─3821 /usr/bin/dockerd -H fd:/ --containerd=/run/containerd/containerd.sock
-    ...
-</pre>      
+    ...           
+```      
     
 - Docker-Compose 설치
 <pre>  
