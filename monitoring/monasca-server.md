@@ -164,10 +164,10 @@ https://github.com/monasca/monasca-docker
         environment:
           NON_LOCAL_TRAFFIC: "true"
           LOGSTASH_FIELDS: "service=monasca-agent-forwarder"
-          OS_AUTH_URL: http://<>:25000/v3
-          OS_USERNAME: <OS_USERNAME>
-          OS_PASSWORD: <OS_PASSWORD>
-          OS_PROJECT_NAME: <OS_PROJECT_NAME>
+          OS_AUTH_URL: http://{OS_AUTH_IP}:25000/v3
+          OS_USERNAME: 
+          OS_PASSWORD: 
+          OS_PROJECT_NAME: 
         extra_hosts:
           - "monasca:192.168.0.103"
           - "control:192.168.56.103"
@@ -186,36 +186,36 @@ https://github.com/monasca/monasca-docker
           LOGSTASH_FIELDS: "service=monasca-agent-collector"
           MONASCA_MONITORING: "true"
           MONASCA_LOG_MONITORING: "false"
-          OS_AUTH_URL: http://125.129.139.99:25000/v3
-          OS_USERNAME: <OS_USERNAME>
-          OS_PASSWORD: <OS_PASSWORD> 
-          OS_PROJECT_NAME: <OS_PROJECT_NAME>
+          OS_AUTH_URL: http://{OS_AUTH_IP}:25000/v3
+          OS_USERNAME: <
+          OS_PASSWORD:  
+          OS_PROJECT_NAME: 
         cap_add:
           - FOWNER
         volumes:
           - "/:/rootfs:ro"
         extra_hosts:
-          - "control:<OPENSTACK_CONTROLL_NODE>"
-          - "compute:<OPENSTACK_COMPUTE1_NODE>"
-          - "compute2:<OPENSTACK_COMPUTE2_NODE>"
-          - "compute3:<OPENSTACK_COMPUTE3_NODE>"
+          - "control:192.168.56.103"
+          - "compute:192.168.56.102"
+          - "compute2:192.168.56.101"
+          - "compute3:192.168.56.104"
     
       alarms:
         image: monasca/alarms:${MON_ALARMS_VERSION}
         environment:
           LOGSTASH_FIELDS: "service=monasca-alarms"
-          OS_AUTH_URL: http://<KEYSTON_IP>:25000/v3
-          OS_USERNAME: <OS_USERNAME>
-          OS_PASSWORD: <OS_PASSWORD>
-          OS_PROJECT_NAME: <OS_PROJECT_NAME>
+          OS_AUTH_URL: http://{OS_AUTH_IP}:25000/v3
+          OS_USERNAME: 
+          OS_PASSWORD: 
+          OS_PROJECT_NAME: 
         depends_on:
     #      - keystone
           - monasca
         extra_hosts:
-          - "control:<OPENSTACK_CONTROLL_NODE>"
-          - "compute1:<OPENSTACK_COMPUTE1_NODE>"
-          - "compute2:<OPENSTACK_COMPUTE2_NODE>"
-          - "compute3:<OPENSTACK_COMPUTE3_NODE>"
+          - "control:192.168.56.103"
+          - "compute:192.168.56.102"
+          - "compute2:192.168.56.101"
+          - "compute3:192.168.56.104"
     
       zookeeper:
         image: zookeeper:${ZOOKEEPER_VERSION}
@@ -300,10 +300,10 @@ https://github.com/monasca/monasca-docker
         environment:
           SIDECAR_URL: http://monasca-sidecar:4888/v1/ingest
           LOGSTASH_FIELDS: "service=monasca-api"
-          KEYSTONE_IDENTITY_URI: http://<KEYSTONE_IP>:25000/v3
-          KEYSTONE_AUTH_URI: http://<KEYSTONE_IP>:25000/v3
-          KEYSTONE_ADMIN_USER: <KEYSTONE_ADMIN_USER>
-          KEYSTONE_ADMIN_PASSWORD: <KEYSTONE_ADMIN_PASSWORD>
+          KEYSTONE_IDENTITY_URI: http://{KEYSTONE_IP}:25000/v3
+          KEYSTONE_AUTH_URI: http://{KEYSTONE_IP}:25000/v3
+          KEYSTONE_ADMIN_USER: 
+          KEYSTONE_ADMIN_PASSWORD: 
         depends_on:
           - influxdb
     #      - keystone
@@ -315,10 +315,10 @@ https://github.com/monasca/monasca-docker
         ports:
           - "8070:8070"
         extra_hosts:
-          - "control:<OPENSTACK_CONTROLL_NODE>"
-          - "compute1:<OPENSTACK_COMPUTE1_NODE>"
-          - "compute2:<OPENSTACK_COMPUTE2_NODE>"
-          - "compute3:<OPENSTACK_COMPUTE3_NODE>"
+          - "control:192.168.56.103"
+          - "compute:192.168.56.102"
+          - "compute2:192.168.56.101"
+          - "compute3:192.168.56.104"
     
       monasca-persister:
         image: monasca/persister:${MON_PERSISTER_VERSION}
@@ -361,7 +361,7 @@ https://github.com/monasca/monasca-docker
           GF_USERS_ALLOW_SIGN_UP: "true"
           GF_USERS_ALLOW_ORG_CREATE: "true"
           GF_AUTH_KEYSTONE_ENABLED: "true"
-          GF_AUTH_KEYSTONE_AUTH_URL: http://<KEYSTONE_IP>:25000
+          GF_AUTH_KEYSTONE_AUTH_URL: http://{KEYSTONE_IP}:25000
           GF_AUTH_KEYSTONE_VERIFY_SSL_CERT: "false"
           GF_AUTH_KEYSTONE_DEFAULT_DOMAIN: "Default"
           LOGSTASH_FIELDS: "service=grafana"
@@ -371,10 +371,10 @@ https://github.com/monasca/monasca-docker
     #      - keystone
           - monasca
         extra_hosts:
-           - "control:<OPENSTACK_CONTROLL_NODE>"
-           - "compute1:<OPENSTACK_COMPUTE1_NODE>"
-           - "compute2:<OPENSTACK_COMPUTE2_NODE>"
-           - "compute3:<OPENSTACK_COMPUTE3_NODE>"
+            - "control:192.168.56.103"
+            - "compute:192.168.56.102"
+            - "compute2:192.168.56.101"
+            - "compute3:192.168.56.104"
     
       grafana-init:
         image: monasca/grafana-init:${MON_GRAFANA_INIT_VERSION}
