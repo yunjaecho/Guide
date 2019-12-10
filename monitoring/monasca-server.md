@@ -69,9 +69,9 @@ https://github.com/monasca/monasca-docker
 # 3.  docker 설치  <div id='3.'/>
 - Docker Key 등록
 <pre>       
-    $ sudo apt update
-    $ sudo apt install apt-transport-https ca-certificates curl software-properties-common
-    $ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add –
+ $ sudo apt update
+ $ sudo apt install apt-transport-https ca-certificates curl software-properties-common
+ $ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add –
 </pre>     
 
 - Docker repository 정보 등록
