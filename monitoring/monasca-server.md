@@ -88,312 +88,313 @@ $ sudo systemctl status docker
 
 - Docker 설치 확인
 ``` 
-    $ sudo apt install docker-ce
+$ sudo apt install docker-ce
    
-    ...
-    docker.service - Docker Application Container Engine
-    Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
-    Active: active (running) since Mon 2019-06-17 01:40:41 UTC; 11s ago
-       Docs: https://docs.docker.com
-    Main PID: 3821 (dockerd)
-      Tasks: 10
-     CGroup: /system.slice/docker.service
-               └─3821 /usr/bin/dockerd -H fd:/ --containerd=/run/containerd/containerd.sock
+...
+docker.service - Docker Application Container Engine
+Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
+Active: active (running) since Mon 2019-06-17 01:40:41 UTC; 11s ago
+   Docs: https://docs.docker.com
+Main PID: 3821 (dockerd)
+   Tasks: 10
+   CGroup: /system.slice/docker.service
+          └─3821 /usr/bin/dockerd -H fd:/ --containerd=/run/containerd/containerd.sock
     ...           
 ```      
     
 - Docker-Compose 설치
-<pre>  
-    $ sudo apt install docker-compose
-</pre>     
+... 
+$ sudo apt install docker-compose
+...     
 
 # 4.  Monasca-Docker 설치  <div id='4.'/>
 - Openstack Keyston network route open
-<pre>    
-    $ sudo route add -net 172.31.30.0/24 gw 10.0.201.254
-</pre>    
+...    
+$ sudo route add -net 172.31.30.0/24 gw 10.0.201.254
+...    
     
 - Monasa-Docker 설치파일 다운로드
-<pre>  
-    $ mkdir workspace & cd workspace
-    $ git clone https://github.com/monasca/monasca-docker.git
-</pre>
+...  
+$ mkdir workspace & cd workspace
+$ git clone https://github.com/monasca/monasca-docker.git
+...
 
 - Monasa-Docker docker-compose.yml 파일 변경 
-<pre>  
-    $ cd monasca-docker
-    $ vi docker-compose.yml
-    ...
-    version: '3'
-    services:
-    
-      memcached:
-        image: memcached:${MEMCACHED_VERSION}
-        environment:
-          LOGSTASH_FIELDS: "service=memcached"
-    
-      influxdb:
-        image: influxdb:${INFLUXDB_VERSION}
-        environment:
-          LOGSTASH_FIELDS: "service=influxdb"
-        ports:
-          - "8086:8086"
-      influxdb-init:
-        image: monasca/influxdb-init:${INFLUXDB_INIT_VERSION}
-        environment:
-          LOGSTASH_FIELDS: "service=influxdb-init"
-        depends_on:
-          - influxdb
-    
-      # cadvisor will allow host metrics to be collected, but requires significant
-      # access to the host system
-      # if this is not desired, the following can be commented out, and the CADVISOR
-      # environment variable should be set to "false" in the `agent-collector`
-      # block - however no metrics will be collected
-      cadvisor:
-        image: google/cadvisor:${CADVISOR_VERSION}
-        environment:
-          LOGSTASH_FIELDS: "service=cadvisor"
-        volumes:
-          - "/:/rootfs:ro"
-          - "/var/run:/var/run:rw"
-          - "/sys:/sys:ro"
-          - "/var/lib/docker:/var/lib/docker:ro"
-    
-      agent-forwarder:
-        image: monasca/agent-forwarder:${MON_AGENT_FORWARDER_VERSION}
-        environment:
-          NON_LOCAL_TRAFFIC: "true"
-          LOGSTASH_FIELDS: "service=monasca-agent-forwarder"
-          OS_AUTH_URL: http://{OS_AUTH_IP}:25000/v3
-          OS_USERNAME: 
-          OS_PASSWORD: 
-          OS_PROJECT_NAME: 
-        extra_hosts:
-          - "monasca:192.168.0.103"
-          - "control:192.168.56.103"
-          - "compute:192.168.56.102"
-          - "compute2:192.168.56.101"
-          - "compute3:192.168.56.104"
-    
-      agent-collector:
-        image: monasca/agent-collector:${MON_AGENT_COLLECTOR_VERSION}
-        restart: on-failure
-        environment:
-          AGENT_HOSTNAME: "docker-host"
-          FORWARDER_URL: "http://agent-forwarder:17123"
-          CADVISOR: "true"
-          CADVISOR_URL: "http://cadvisor:8080/"
-          LOGSTASH_FIELDS: "service=monasca-agent-collector"
-          MONASCA_MONITORING: "true"
-          MONASCA_LOG_MONITORING: "false"
-          OS_AUTH_URL: http://{OS_AUTH_IP}:25000/v3
-          OS_USERNAME: <
-          OS_PASSWORD:  
-          OS_PROJECT_NAME: 
-        cap_add:
-          - FOWNER
-        volumes:
-          - "/:/rootfs:ro"
-        extra_hosts:
-          - "control:192.168.56.103"
-          - "compute:192.168.56.102"
-          - "compute2:192.168.56.101"
-          - "compute3:192.168.56.104"
-    
-      alarms:
-        image: monasca/alarms:${MON_ALARMS_VERSION}
-        environment:
-          LOGSTASH_FIELDS: "service=monasca-alarms"
-          OS_AUTH_URL: http://{OS_AUTH_IP}:25000/v3
-          OS_USERNAME: 
-          OS_PASSWORD: 
-          OS_PROJECT_NAME: 
-        depends_on:
-    #      - keystone
-          - monasca
-        extra_hosts:
-          - "control:192.168.56.103"
-          - "compute:192.168.56.102"
-          - "compute2:192.168.56.101"
-          - "compute3:192.168.56.104"
-    
-      zookeeper:
-        image: zookeeper:${ZOOKEEPER_VERSION}
-        environment:
-          LOGSTASH_FIELDS: "service=zookeeper"
-        restart: on-failure
-    
-      kafka:
-        image: monasca/kafka:${MON_KAFKA_VERSION}
-        environment:
-          KAFKA_DELETE_TOPIC_ENABLE: "true"
-          LOGSTASH_FIELDS: "service=kafka"
-        restart: on-failure
-        depends_on:
-          - zookeeper
-      kafka-watcher:
-        image: monasca/kafka-watcher:${MON_KAFKA_WATCHER_VERSION}
-        environment:
-          BOOT_STRAP_SERVERS: "kafka"
-          PROMETHEUS_ENDPOINT: "0.0.0.0:8080"
-          LOGSTASH_FIELDS: "service=kafka-watcher"
-        depends_on:
-          - kafka
-        ports:
-          - "18080:8080"
-      kafka-init:
-        image: monasca/kafka-init:${MON_KAFKA_INIT_VERSION}
-        environment:
-          ZOOKEEPER_CONNECTION_STRING: "zookeeper:2181"
-          KAFKA_TOPIC_CONFIG: segment.ms=900000 # 15m
-          KAFKA_CREATE_TOPICS: "\
-            metrics:64:1,\
-            alarm-state-transitions:12:1,\
-            alarm-notifications:12:1,\
-            retry-notifications:3:1,\
-            events:12:1,\
-            kafka-health-check:1:1,\
-            60-seconds-notifications:3:1"
-          LOGSTASH_FIELDS: "service=kafka-init"
-        depends_on:
-          - zookeeper
-    
-      mysql:
-        image: mysql:${MYSQL_VERSION}
-        environment:
-          MYSQL_ROOT_PASSWORD: secretmysql
-          LOGSTASH_FIELDS: "service=mysql"
-        ports:
-          - "3306:3306"
-      mysql-init:
-        image: monasca/mysql-init:${MYSQL_INIT_VERSION}
-        environment:
-          MYSQL_INIT_DISABLE_REMOTE_ROOT: "false"
-          MYSQL_INIT_RANDOM_PASSWORD: "false"
-          LOGSTASH_FIELDS: "service=mysql-init"
-    
-    #  keystone 부분 주석 처리
-    #  keystone:
-    #    image: monasca/keystone:${MON_KEYSTONE_VERSION}
-    #    environment:
-    #      KEYSTONE_HOST: keystone
-    #      KEYSTONE_PASSWORD: secretadmin
-    #      KEYSTONE_DATABASE_BACKEND: mysql
-    #      KEYSTONE_MYSQL_HOST: mysql
-    #      KEYSTONE_MYSQL_USER: keystone
-    #      KEYSTONE_MYSQL_PASSWORD: keystone
-    #      KEYSTONE_MYSQL_DATABASE: keystone
-    #      LOGSTASH_FIELDS: "service=keystone"
-    #    depends_on:
-    #      - mysql
-    #    ports:
-    #      - "5001:5000"
-    #      - "35357:35357"
-    
-      monasca-sidecar:
-        image: timothyb89/monasca-sidecar:${MON_SIDECAR_VERSION}
-        environment:
-          LOGSTASH_FIELDS: "service=monasca-sidecar"
-    
-      monasca:
-        image: monasca/api:${MON_API_VERSION}
-        environment:
-          SIDECAR_URL: http://monasca-sidecar:4888/v1/ingest
-          LOGSTASH_FIELDS: "service=monasca-api"
-          KEYSTONE_IDENTITY_URI: http://{KEYSTONE_IP}:25000/v3
-          KEYSTONE_AUTH_URI: http://{KEYSTONE_IP}:25000/v3
-          KEYSTONE_ADMIN_USER: 
-          KEYSTONE_ADMIN_PASSWORD: 
-        depends_on:
-          - influxdb
-    #      - keystone
-          - mysql
-          - zookeeper
-          - kafka
-          - monasca-sidecar
-          - memcached
-        ports:
-          - "8070:8070"
-        extra_hosts:
-          - "control:192.168.56.103"
-          - "compute:192.168.56.102"
-          - "compute2:192.168.56.101"
-          - "compute3:192.168.56.104"
-    
-      monasca-persister:
-        image: monasca/persister:${MON_PERSISTER_VERSION}
-        environment:
-          LOGSTASH_FIELDS: "service=monasca-persister"
-        restart: on-failure
-        depends_on:
-          - monasca
-          - influxdb
-          - zookeeper
-          - kafka
-    
-      thresh:
-        image: monasca/thresh:${MON_THRESH_VERSION}
-        environment:
-          NO_STORM_CLUSTER: "true"
-          WORKER_MAX_HEAP_MB: "256"
-          LOGSTASH_FIELDS: "service=monasca-thresh"
-        depends_on:
-          - zookeeper
-          - kafka
-    
-      monasca-notification:
-        image: monasca/notification:${MON_NOTIFICATION_VERSION}
-        environment:
-          NF_PLUGINS: "webhook"
-          LOGSTASH_FIELDS: "service=monasca-notification"
-          STATSD_HOST: monasca-statsd
-          STATSD_PORT: 8125
-        depends_on:
-          - monasca
-          - zookeeper
-          - kafka
-          - mysql
-    
-      grafana:
-        image: monasca/grafana:${MON_GRAFANA_VERSION}
-        environment:
-          GF_AUTH_BASIC_ENABLED: "false"
-          GF_USERS_ALLOW_SIGN_UP: "true"
-          GF_USERS_ALLOW_ORG_CREATE: "true"
-          GF_AUTH_KEYSTONE_ENABLED: "true"
-          GF_AUTH_KEYSTONE_AUTH_URL: http://{KEYSTONE_IP}:25000
-          GF_AUTH_KEYSTONE_VERIFY_SSL_CERT: "false"
-          GF_AUTH_KEYSTONE_DEFAULT_DOMAIN: "Default"
-          LOGSTASH_FIELDS: "service=grafana"
-        ports:
-          - "3000:3000"
-        depends_on:
-    #      - keystone
-          - monasca
-        extra_hosts:
-            - "control:192.168.56.103"
-            - "compute:192.168.56.102"
-            - "compute2:192.168.56.101"
-            - "compute3:192.168.56.104"
-    
-      grafana-init:
-        image: monasca/grafana-init:${MON_GRAFANA_INIT_VERSION}
-        environment:
-          LOGSTASH_FIELDS: "service=grafana-init"
-        depends_on:
-          - grafana
-    
-      monasca-statsd:
-        image: monasca/statsd:${MON_STATSD_VERSION}
-        environment:
-          FORWARDER_URL: http://agent-forwarder:17123
-          LOG_LEVEL: WARN
-        ports:
-          - "8125/udp"
+...  
+$ cd monasca-docker
+$ vi docker-compose.yml
+---
+...
+version: '3'
+services:
 
-    ...
-</pre>
+  memcached:
+    image: memcached:${MEMCACHED_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=memcached"
+
+  influxdb:
+    image: influxdb:${INFLUXDB_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=influxdb"
+    ports:
+      - "8086:8086"
+  influxdb-init:
+    image: monasca/influxdb-init:${INFLUXDB_INIT_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=influxdb-init"
+    depends_on:
+      - influxdb
+
+  # cadvisor will allow host metrics to be collected, but requires significant
+  # access to the host system
+  # if this is not desired, the following can be commented out, and the CADVISOR
+  # environment variable should be set to "false" in the `agent-collector`
+  # block - however no metrics will be collected
+  cadvisor:
+    image: google/cadvisor:${CADVISOR_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=cadvisor"
+    volumes:
+      - "/:/rootfs:ro"
+      - "/var/run:/var/run:rw"
+      - "/sys:/sys:ro"
+      - "/var/lib/docker:/var/lib/docker:ro"
+
+  agent-forwarder:
+    image: monasca/agent-forwarder:${MON_AGENT_FORWARDER_VERSION}
+    environment:
+      NON_LOCAL_TRAFFIC: "true"
+      LOGSTASH_FIELDS: "service=monasca-agent-forwarder"
+      OS_AUTH_URL: http://{OS_AUTH_IP}:25000/v3
+      OS_USERNAME: 
+      OS_PASSWORD: 
+      OS_PROJECT_NAME: 
+    extra_hosts:
+      - "monasca:192.168.0.103"
+      - "control:192.168.56.103"
+      - "compute:192.168.56.102"
+      - "compute2:192.168.56.101"
+      - "compute3:192.168.56.104"
+
+  agent-collector:
+    image: monasca/agent-collector:${MON_AGENT_COLLECTOR_VERSION}
+    restart: on-failure
+    environment:
+      AGENT_HOSTNAME: "docker-host"
+      FORWARDER_URL: "http://agent-forwarder:17123"
+      CADVISOR: "true"
+      CADVISOR_URL: "http://cadvisor:8080/"
+      LOGSTASH_FIELDS: "service=monasca-agent-collector"
+      MONASCA_MONITORING: "true"
+      MONASCA_LOG_MONITORING: "false"
+      OS_AUTH_URL: http://{OS_AUTH_IP}:25000/v3
+      OS_USERNAME: <
+      OS_PASSWORD:  
+      OS_PROJECT_NAME: 
+    cap_add:
+      - FOWNER
+    volumes:
+      - "/:/rootfs:ro"
+    extra_hosts:
+      - "control:192.168.56.103"
+      - "compute:192.168.56.102"
+      - "compute2:192.168.56.101"
+      - "compute3:192.168.56.104"
+
+  alarms:
+    image: monasca/alarms:${MON_ALARMS_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=monasca-alarms"
+      OS_AUTH_URL: http://{OS_AUTH_IP}:25000/v3
+      OS_USERNAME: 
+      OS_PASSWORD: 
+      OS_PROJECT_NAME: 
+    depends_on:
+#      - keystone
+      - monasca
+    extra_hosts:
+      - "control:192.168.56.103"
+      - "compute:192.168.56.102"
+      - "compute2:192.168.56.101"
+      - "compute3:192.168.56.104"
+
+  zookeeper:
+    image: zookeeper:${ZOOKEEPER_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=zookeeper"
+    restart: on-failure
+
+  kafka:
+    image: monasca/kafka:${MON_KAFKA_VERSION}
+    environment:
+      KAFKA_DELETE_TOPIC_ENABLE: "true"
+      LOGSTASH_FIELDS: "service=kafka"
+    restart: on-failure
+    depends_on:
+      - zookeeper
+  kafka-watcher:
+    image: monasca/kafka-watcher:${MON_KAFKA_WATCHER_VERSION}
+    environment:
+      BOOT_STRAP_SERVERS: "kafka"
+      PROMETHEUS_ENDPOINT: "0.0.0.0:8080"
+      LOGSTASH_FIELDS: "service=kafka-watcher"
+    depends_on:
+      - kafka
+    ports:
+      - "18080:8080"
+  kafka-init:
+    image: monasca/kafka-init:${MON_KAFKA_INIT_VERSION}
+    environment:
+      ZOOKEEPER_CONNECTION_STRING: "zookeeper:2181"
+      KAFKA_TOPIC_CONFIG: segment.ms=900000 # 15m
+      KAFKA_CREATE_TOPICS: "\
+        metrics:64:1,\
+        alarm-state-transitions:12:1,\
+        alarm-notifications:12:1,\
+        retry-notifications:3:1,\
+        events:12:1,\
+        kafka-health-check:1:1,\
+        60-seconds-notifications:3:1"
+      LOGSTASH_FIELDS: "service=kafka-init"
+    depends_on:
+      - zookeeper
+
+  mysql:
+    image: mysql:${MYSQL_VERSION}
+    environment:
+      MYSQL_ROOT_PASSWORD: secretmysql
+      LOGSTASH_FIELDS: "service=mysql"
+    ports:
+      - "3306:3306"
+  mysql-init:
+    image: monasca/mysql-init:${MYSQL_INIT_VERSION}
+    environment:
+      MYSQL_INIT_DISABLE_REMOTE_ROOT: "false"
+      MYSQL_INIT_RANDOM_PASSWORD: "false"
+      LOGSTASH_FIELDS: "service=mysql-init"
+
+#  keystone 부분 주석 처리
+#  keystone:
+#    image: monasca/keystone:${MON_KEYSTONE_VERSION}
+#    environment:
+#      KEYSTONE_HOST: keystone
+#      KEYSTONE_PASSWORD: secretadmin
+#      KEYSTONE_DATABASE_BACKEND: mysql
+#      KEYSTONE_MYSQL_HOST: mysql
+#      KEYSTONE_MYSQL_USER: keystone
+#      KEYSTONE_MYSQL_PASSWORD: keystone
+#      KEYSTONE_MYSQL_DATABASE: keystone
+#      LOGSTASH_FIELDS: "service=keystone"
+#    depends_on:
+#      - mysql
+#    ports:
+#      - "5001:5000"
+#      - "35357:35357"
+
+  monasca-sidecar:
+    image: timothyb89/monasca-sidecar:${MON_SIDECAR_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=monasca-sidecar"
+
+  monasca:
+    image: monasca/api:${MON_API_VERSION}
+    environment:
+      SIDECAR_URL: http://monasca-sidecar:4888/v1/ingest
+      LOGSTASH_FIELDS: "service=monasca-api"
+      KEYSTONE_IDENTITY_URI: http://{KEYSTONE_IP}:25000/v3
+      KEYSTONE_AUTH_URI: http://{KEYSTONE_IP}:25000/v3
+      KEYSTONE_ADMIN_USER: 
+      KEYSTONE_ADMIN_PASSWORD: 
+    depends_on:
+      - influxdb
+#      - keystone
+      - mysql
+      - zookeeper
+      - kafka
+      - monasca-sidecar
+      - memcached
+    ports:
+      - "8070:8070"
+    extra_hosts:
+      - "control:192.168.56.103"
+      - "compute:192.168.56.102"
+      - "compute2:192.168.56.101"
+      - "compute3:192.168.56.104"
+
+  monasca-persister:
+    image: monasca/persister:${MON_PERSISTER_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=monasca-persister"
+    restart: on-failure
+    depends_on:
+      - monasca
+      - influxdb
+      - zookeeper
+      - kafka
+
+  thresh:
+    image: monasca/thresh:${MON_THRESH_VERSION}
+    environment:
+      NO_STORM_CLUSTER: "true"
+      WORKER_MAX_HEAP_MB: "256"
+      LOGSTASH_FIELDS: "service=monasca-thresh"
+    depends_on:
+      - zookeeper
+      - kafka
+
+  monasca-notification:
+    image: monasca/notification:${MON_NOTIFICATION_VERSION}
+    environment:
+      NF_PLUGINS: "webhook"
+      LOGSTASH_FIELDS: "service=monasca-notification"
+      STATSD_HOST: monasca-statsd
+      STATSD_PORT: 8125
+    depends_on:
+      - monasca
+      - zookeeper
+      - kafka
+      - mysql
+
+  grafana:
+    image: monasca/grafana:${MON_GRAFANA_VERSION}
+    environment:
+      GF_AUTH_BASIC_ENABLED: "false"
+      GF_USERS_ALLOW_SIGN_UP: "true"
+      GF_USERS_ALLOW_ORG_CREATE: "true"
+      GF_AUTH_KEYSTONE_ENABLED: "true"
+      GF_AUTH_KEYSTONE_AUTH_URL: http://{KEYSTONE_IP}:25000
+      GF_AUTH_KEYSTONE_VERIFY_SSL_CERT: "false"
+      GF_AUTH_KEYSTONE_DEFAULT_DOMAIN: "Default"
+      LOGSTASH_FIELDS: "service=grafana"
+    ports:
+      - "3000:3000"
+    depends_on:
+#      - keystone
+      - monasca
+    extra_hosts:
+        - "control:192.168.56.103"
+        - "compute:192.168.56.102"
+...
+        - "compute2:192.168.56.101"
+        - "compute3:192.168.56.104"
+
+  grafana-init:
+    image: monasca/grafana-init:${MON_GRAFANA_INIT_VERSION}
+    environment:
+      LOGSTASH_FIELDS: "service=grafana-init"
+    depends_on:
+      - grafana
+
+  monasca-statsd:
+    image: monasca/statsd:${MON_STATSD_VERSION}
+    environment:
+      FORWARDER_URL: http://agent-forwarder:17123
+      LOG_LEVEL: WARN
+    ports:
+      - "8125/udp"
+ ...
+...
     
 - Monasca-Docker Server 설치 및 시작
 <pre>    
