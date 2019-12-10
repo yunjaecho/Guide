@@ -95,12 +95,28 @@ SaaS 서비스는 내부적으로 메트릭스 정보를 수집 하는 PINPOINT 
 # <div id='12'/>3.	PaaS-TA Monitoring 설치
 
 ## <div id='13'/>3.1. Pre-requsite
+ 1. Openstack Queens version 이상
+ 2. PaaS-TA가 Openstack에 설치 되어 있어야 한다.
+ 3. 설치된 Openstack위에 PaaS-TA에 설치 되어 있어야 한다.(PaaS-TA Agent설치 되어 있어야 한다)
+ 4. IaaS-PaaS-Monitoring 시스템에는 선행작업(Prerequisites)으로 Monasca Server가 설치 되어 있어야 한다. Monasca Client(agent)는 openstack controller, compute node에 설치되어 있어야 한다. 아래 Monasca Server/Client를 먼저 설치 후 IaaS-PaaS-Monitoring을 설치 해야 한다.
+ 5. IaaS-PaaS-Monitoring이 설치되는 서버에 golang 1.9.x 버전 이상이 설치 되어 있어야 한다.
 
-1. PaaS-TA 5.0 Monitoring을 설치 하기 위해서는 bosh 설치과정에서 언급한 것 처럼 관련 deployment, release , stemcell을 PaaS-TA 사이트에서 다운로드 받아 정해진 경로에 복사 해야 한다.
-2. PaaS-TA 5.0이 설치되어 있어야 하며 monitoring Agent가 설치되어 있어야 한다.
-3. bosh login이 되어 있어야 한다.
+## <div id='13-1'/>3.2. PaaS-TA 5.0 Monitoring IaaS 설치환경
+PaaS-TA 통합 모니터링 환경을 구성하기 위해서는 IaaS에서는 Monasca-Server/Client를 설치해야 한다.
 
-## <div id='14'/>3.2.	PaaS-TA 5.0 모니터링 설치 파일 다운로드
+### <div id='12'/>3.2.1.	Monasca 설치
+Monasca는 Server와 Client로 구성되어 있다. Openstack controller/compute Node에 Monasca-Client(Agent)를 설치 하여 Monasca 상태정보를 Monasca-Server에 전송한다. 수집된 Data를 기반으로 IaaS 모니터링을 수행한다.
+Monasca-Server는 Openstack에서 VM을 수동 생성하여 설치를 진행한다.
+
+#### <div id='13'/>3.2.1.1.	Monasca Server 설치
+
+> **[Monasca - Server](./monasca-server.md)**
+
+#### <div id='14'/>3.2.1.2.	Monasca Client(agent) 설치
+
+> **[Monasca - Client](./monasca-client.md)**
+
+## <div id='14'/>3.3.	PaaS-TA 5.0 모니터링 설치 파일 다운로드
 
 > **[설치 파일 다운로드 받기](https://paas-ta.kr/download/package)**
 
@@ -110,7 +126,7 @@ PaaS-TA 사이트에서 [PaaS-TA 설치 릴리즈] 파일을 다운로드 받아
 
 ![PaaSTa_release_dir_5.0]
 
-## <div id='15'/>3.3. PaaS-TA Monitoring 설치환경
+## <div id='15'/>3.4. PaaS-TA Monitoring 설치환경
 
 ~/workspace/paasta-5.0/deployment/paasta-deployment-monitoring 이하 디렉토리에는 paasta-monitoring, paasta-pinpoint-monitoring 디렉토리가 존재한다. Logsearch는 logAgent에서 발생한 Log정보를 수집하여 저장하는 Deployment이다. paasta-monitoring은 PaaS-TA VM에서 발생한 Metric정보를 수집하여 모니터링을 실행한다.
 
@@ -118,7 +134,7 @@ PaaS-TA 사이트에서 [PaaS-TA 설치 릴리즈] 파일을 다운로드 받아
 $ cd ~/workspace/paasta-5.0/deployment/paasta-deployment-monitoring
 ```
 
-## <div id='16'/>3.4.	Logsearch 설치
+## <div id='16'/>3.5.	Logsearch 설치
 
 PaaS-TA VM Log수집을 위해서는 logsearch가 설치되어야 한다. 
 
@@ -126,7 +142,7 @@ PaaS-TA VM Log수집을 위해서는 logsearch가 설치되어야 한다.
 $ cd ~/workspace/paasta-5.0/deployment/paasta-deployment-monitoring/paasta-monitoring
 ```
 
-### <div id='17'/>3.4.1.	logsearch-deployment.yml
+### <div id='17'/>3.5.1.	logsearch-deployment.yml
 logsearch-deployment.yml에는 ls-router, cluster-monitor, elasticsearch_data, elastic_master, kibana, mainternance 의 명세가 정의되어 있다. 
 
 ```
