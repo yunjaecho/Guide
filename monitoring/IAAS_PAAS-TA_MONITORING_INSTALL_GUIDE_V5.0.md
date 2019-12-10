@@ -52,7 +52,7 @@ CF DEPLOYMENT: [https://github.com/cloudfoundry/cf-deployment](https://github.co
 ## <div id='6-0'/>2.1. IaaS  Monitoring Architecture
 IaaS 서비스 모니터링 운영환경은 IaaS는 Openstack과 Monasca를 기반으로 구성되어 있다. IaaS는 Openstack Node에 monasca Agent가 설치되어 Metric Data를 Monasca에 전송하여 InfluxDB에 저장한다. PaaS는 PaaS-TA에 모니터링 Agent가 설치되어 InfluxDB에 전송 저장한다. 
 Log Agent도 IaaS/PaaS에 설치되어 Log Data를 각각의 Log Repository에 전송한다.
-![aaSTa_Monit_architecure_Image]
+![IaaSTa_Monit_architecure_Image]
 
 ## <div id='6'/>2.2. PaaS  Monitoring Architecture
 PaaS 서비스 모니터링 운영환경에서는 크게 Backend 환경에서 실행되는 Batch 프로세스 영역과 Frontend 환경에서 실행되는 Monitoring 시스템 영역으로 나누어진다.
