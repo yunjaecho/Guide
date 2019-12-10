@@ -89,7 +89,7 @@ $ sudo systemctl status docker
 - Docker 설치 확인
 ``` 
 $ sudo apt install docker-ce
-   
+---   
 ...
 docker.service - Docker Application Container Engine
 Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
@@ -99,25 +99,25 @@ Main PID: 3821 (dockerd)
    Tasks: 10
    CGroup: /system.slice/docker.service
           └─3821 /usr/bin/dockerd -H fd:/ --containerd=/run/containerd/containerd.sock
-    ...           
+...           
 ```      
     
 - Docker-Compose 설치
-... 
+``` 
 $ sudo apt install docker-compose
-...     
+```       
 
 # 4.  Monasca-Docker 설치  <div id='4.'/>
 - Openstack Keyston network route open
-...    
+```    
 $ sudo route add -net 172.31.30.0/24 gw 10.0.201.254
-...    
+```    
     
 - Monasa-Docker 설치파일 다운로드
-...  
+```  
 $ mkdir workspace & cd workspace
 $ git clone https://github.com/monasca/monasca-docker.git
-...
+```  
 
 - Monasa-Docker docker-compose.yml 파일 변경 
 ...  
