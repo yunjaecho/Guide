@@ -164,10 +164,10 @@ https://github.com/monasca/monasca-docker
         environment:
           NON_LOCAL_TRAFFIC: "true"
           LOGSTASH_FIELDS: "service=monasca-agent-forwarder"
-          OS_AUTH_URL: http://125.129.139.99:25000/v3
-          OS_USERNAME: admin
-          OS_PASSWORD: openstack
-          OS_PROJECT_NAME: admin
+          OS_AUTH_URL: http://<>:25000/v3
+          OS_USERNAME: <OS_USERNAME>
+          OS_PASSWORD: <OS_PASSWORD>
+          OS_PROJECT_NAME: <OS_PROJECT_NAME>
         extra_hosts:
           - "monasca:192.168.0.103"
           - "control:192.168.56.103"
