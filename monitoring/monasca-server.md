@@ -6,21 +6,11 @@ Monasca Server 설치 가이드
     * [범위](#1.2.)
     * [참고자료](#1.3.)
 2. [Pre-Requisite(전제조건)](#2.)
-3. [MariaDB 설치 및 데이터베이스 설정](#3.)
-4. [Apache Zookeeper 설치](#4.)
-5. [Apache Kafka 설치](#5.)
-6. [Apache Storm 설치](#6.)
-7. [InfluxDB 설치](#7.)
-8. [Monasca Persister 설치](#8.)
-9. [Monasca Common 설치](#9.)
-10. [Monasca Thresh 설치](#10.)
-11. [Monasca Notification 설치](#11.)
-
-12. [Monasca API 설치](#12.)
-13. [Elasticsearch 관련 프로그램 설치](#13.)
-    * [Elasticserarch 서버 설치](#13.1.)
-    * [logstash 설치](#13.2.)
-14. [Reference : Cross-Project(Tenant) 사용자 추가 및 권한 부여](#14.)
+3. [docker 설치](#3.)
+4. [Monasca-Docker 설치](#4.)
+5. [Elasticserarch 서버 설치](#5.)
+6. [logstash 설치](#6.)
+7. [Reference : Cross-Project(Tenant) 사용자 추가 및 권한 부여](#7.)
     
 # 1.  개요  <div id='1.'/>
 # 1.1.  문서 목적  <div id='1.1.'/>
@@ -573,7 +563,7 @@ $ sudo service logstash start
 ```
 ![](images/Monasca/monasca-logstash-ps.png)
 
-# 14. Reference : Cross-Project(Tenant) 사용자 추가 및 권한 부여  <div id='14.'/>
+# 7. Reference : Cross-Project(Tenant) 사용자 추가 및 권한 부여  <div id='7.'/>
 Openstack 기반으로 생성된 모든 Project(Tenant)의 정보를 하나의 계정으로 수집 및 조회하기 위해서는 Cross-Tenant 사용자를 생성하여, 각각의 Project(Tenant)마다 조회할 수 있도록 멤버로 등록한다.
 Openstack Cli를 이용하여 Cross-Tenant 사용자를 생성한 후, Openstack Horizon 화면으로 통해 각각의 프로젝트 사용자 정보에 생성한 Cross-Tenant 사용자 및 권한을 부여한다.
 1. Cross-Tenant 사용자 생성
