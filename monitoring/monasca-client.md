@@ -474,13 +474,18 @@ Openstack Compute Node에서 발생한는 Log정보를 수집하기 위해서는
 Elastic Search에서 제공하는 FileBeat를 이용하여 Openstack Node정보를 수집한다.
 ## 3.1.	filebeat repository 등록   <div id='3.1.'/>
 ```
+wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+OK
+
+...
+
 $ echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | sudo tee -a     /etc/apt/sources.list.d/elastic-5.x.list
 $ sudo apt-get update
 ```
     
 ## 3.2.	filebeat 설치   <div id='3.2.'/>
 ```
-$ sudo apt-get install -y filebeat
+$ sudo apt-get install -y filebeat=5.6.16
 ```
 
 ## 3.3.	filebeat configuration 파일 수정   <div id='3.3.'/>
