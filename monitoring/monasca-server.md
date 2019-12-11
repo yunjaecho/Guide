@@ -488,9 +488,22 @@ $ curl -XGET 'localhost:9200/_nodes?filter_path=**.mlockall&pretty'
     
 
 # 6.  logstash 설치  <div id='6.'/>
-- logstash 설치
+- logstash repository 추가.
 ```    
-$ sudo apt-get install -y logstash
+$ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+OK
+$ echo 'deb http://packages.elastic.co/logstash/2.2/debian stable main' | sudo tee /etc/apt/sources.list.d/logstash-2.2.x.list
+deb http://packages.elastic.co/logstash/2.2/debian stable main
+
+```
+
+- logstash 설치
+```
+$ apt-get update
+...
+$ apt-get install -y logstash
+...
+
 ```
 
 - /etc/hosts 파일 수정
@@ -534,17 +547,18 @@ $ sudo vi conf.d/syslog-filter.conf
 ---
 ...
 filter {
-      if [type] == "syslog" {
-        grok {
-          match => { "message" => "%{SYSLOGTIMESTAMP:syslog_timestamp} %{SYSLOGHOST:syslog_hostname} %{DATA:syslog_program}(?:\[%{POSINT:syslog_pid}\])?: %{GREEDYDATA:syslog_message}" }
-          add_field => [ "received_at", "%{@timestamp}" ]
-          add_field => [ "received_from", "%{host}" ]
-        }
-        date {
-          match => [ "syslog_timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss" ]
-        }
-      }
-    }
+ if [type] == "syslog" {
+   grok {
+     match => { "message" => "%{SYSLOGTIMESTAMP:syslog_timestamp} %{SYSLOGHOST:syslog_hostname} %{DATA:syslog_program}(?:\[%{POSINT:syslog_pid}\])?: %{GREEDYDATA:syslog_message}" }
+     add_field => [ "received_at", "%{@timestamp}" ]
+     add_field => [ "received_from", "%{host}" ]
+   }
+   date {
+     match => [ "syslog_timestamp", "yyyy-MM-dd HH:mm:ss.SSS" ]          # openstack의 log output에 따라 포멧 변경필요.
+   }
+ }
+}
+
 ...
 ```
 
