@@ -398,20 +398,15 @@ $ sudo apt-get update
 $ sudo apt-get install openjdk-8-jdk
 ```
 
-- Elasticsearch repository 등록
-```    
-$ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-$ echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-5.x.list
-```
-
 - Elasticsearch 설치
 ```
-$ sudo apt-get update
-$ sudo apt-get install -y elasticsearch
+$ wget https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/deb/elasticsearch/2.3.1/elasticsearch-2.3.1.deb
+$ dpkg -i elasticsearch-2.3.1.deb
+
 ```     
     
 - 사용자 그룹 추가 - Elasticsearch
-```    
+```
 $ sudo usermod -a -G elasticsearch “사용자 계정”
 ```        
     
@@ -420,15 +415,34 @@ $ sudo usermod -a -G elasticsearch “사용자 계정”
 $ cd /etc/elasticsearch && sudo vi elasticsearch.yml
 ---
 ...
+
+# Use a descriptive name for your cluster:
+#
+cluster.name: escluster1
+
+...
+
+# Use a descriptive name for the node:
+#
+node.name: node-1
+
 # Lock the memory on startup:
-bootstrap.memory_lock: true
+#
+bootstrap.mlockall: true
+
 ...
 # Set the bind address to a specific IP (IPv4 or IPv6):
+#
 network.host: 0.0.0.0
+
     
 # Set a custom port for HTTP:
 http.port: 9200
 ...
+
+index.number_of_shards: 1
+index.number_of_replicas: 0
+
 ```
     
 - Elasticsearch service 파일 수정
