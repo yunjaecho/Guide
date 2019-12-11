@@ -34,13 +34,14 @@ https://github.com/monasca/monasca-docker
 - Monasca Server 를 설치하기에 필요한 프로그램을 사전에 설치한다.
 - 설치 환경은 Ubuntu 18.04 , OpenStack Stein 기준으로 작성하였다.
 
-※ 설치 프로그램 리스트 및 버전 참조 (순서)<br>
-- INFLUXDB_VERSION=1.3.2-alpine
-- INFLUXDB_INIT_VERSION=latest
-- MYSQL_VERSION=5.5
-- MYSQL_INIT_VERSION=1.5.1
+※ 설치 프로그램 리스트 및 버전 참조 (순서)<br />
+ * [repo](https://github.com/monasca/monasca-docker.git) branch 정책에 따라 버전이 변경될 수 있음.<br/>
+- INFLUXDB_VERSION=1.3.3-alpine
+- INFLUXDB_INIT_VERSION=1.0.1
+- MYSQL_VERSION=5.7
+- MYSQL_INIT_VERSION=1.5.4
 - MEMCACHED_VERSION=1.5.0-alpine
-- CADVISOR_VERSION=v0.26.1
+- CADVISOR_VERSION=v0.27.1
 - ZOOKEEPER_VERSION=3.4
    
 ※ 설치 전 사전에 설치되어 있어야 하는 프로그램<br>
@@ -156,16 +157,16 @@ services:
     environment:
       NON_LOCAL_TRAFFIC: "true"
       LOGSTASH_FIELDS: "service=monasca-agent-forwarder"
-      OS_AUTH_URL: http://{OS_AUTH_IP}:25000/v3
-      OS_USERNAME: 
-      OS_PASSWORD: 
-      OS_PROJECT_NAME: 
+      OS_AUTH_URL: http://{keystone api ip}:{keystone port}/v3    # openstack keystone(identity) api ip, port
+      OS_USERNAME: admin                                          # openstack admin account
+      OS_PASSWORD: password                                       # openstack admin password
+      OS_PROJECT_NAME: admin                                      # openstack admin project
     extra_hosts:
-      - "monasca:192.168.0.103"
-      - "control:192.168.56.103"
-      - "compute:192.168.56.102"
-      - "compute2:192.168.56.101"
-      - "compute3:192.168.56.104"
+      - "monasca:192.168.0.103"       # monasca-api host ip
+      - "control:192.168.56.103"      # openstack control node host:ip
+      - "compute:192.168.56.102"      # openstack compute node host:ip
+      - "compute2:192.168.56.101"     # openstack compute node host:ip
+      - "compute3:192.168.56.104"     # openstack compute node host:ip
 
   agent-collector:
     image: monasca/agent-collector:${MON_AGENT_COLLECTOR_VERSION}
@@ -178,36 +179,36 @@ services:
       LOGSTASH_FIELDS: "service=monasca-agent-collector"
       MONASCA_MONITORING: "true"
       MONASCA_LOG_MONITORING: "false"
-      OS_AUTH_URL: http://{OS_AUTH_IP}:25000/v3
-      OS_USERNAME: <
-      OS_PASSWORD:  
-      OS_PROJECT_NAME: 
+      OS_AUTH_URL: http://{keystone api ip}:{keystone port}/v3    # keystone(identity) api ip, port
+      OS_USERNAME: admin                                          # openstack admin account
+      OS_PASSWORD: password                                       # openstack admin password 
+      OS_PROJECT_NAME: admin                                      # openstack admin project
     cap_add:
       - FOWNER
     volumes:
       - "/:/rootfs:ro"
     extra_hosts:
-      - "control:192.168.56.103"
-      - "compute:192.168.56.102"
-      - "compute2:192.168.56.101"
-      - "compute3:192.168.56.104"
+      - "control:192.168.56.103"      # openstack control node host:ip
+      - "compute:192.168.56.102"      # openstack compute node host:ip
+      - "compute2:192.168.56.101"     # openstack compute node host:ip
+      - "compute3:192.168.56.104"     # openstack compute node host:ip
 
   alarms:
     image: monasca/alarms:${MON_ALARMS_VERSION}
     environment:
       LOGSTASH_FIELDS: "service=monasca-alarms"
-      OS_AUTH_URL: http://{OS_AUTH_IP}:25000/v3
-      OS_USERNAME: 
-      OS_PASSWORD: 
-      OS_PROJECT_NAME: 
+      OS_AUTH_URL: http://{keystone api ip}:{keystone port}/v3    # keystone(identity) api ip, port
+      OS_USERNAME: admin                                          # openstack admin account
+      OS_PASSWORD: password                                       # openstack admin password 
+      OS_PROJECT_NAME: admin                                      # openstack admin project 
     depends_on:
 #      - keystone
       - monasca
     extra_hosts:
-      - "control:192.168.56.103"
-      - "compute:192.168.56.102"
-      - "compute2:192.168.56.101"
-      - "compute3:192.168.56.104"
+      - "control:192.168.56.103"      # openstack control node host:ip
+      - "compute:192.168.56.102"      # openstack compute node host:ip
+      - "compute2:192.168.56.101"     # openstack compute node host:ip
+      - "compute3:192.168.56.104"     # openstack compute node host:ip
 
   zookeeper:
     image: zookeeper:${ZOOKEEPER_VERSION}
@@ -292,10 +293,10 @@ services:
     environment:
       SIDECAR_URL: http://monasca-sidecar:4888/v1/ingest
       LOGSTASH_FIELDS: "service=monasca-api"
-      KEYSTONE_IDENTITY_URI: http://{KEYSTONE_IP}:25000/v3
-      KEYSTONE_AUTH_URI: http://{KEYSTONE_IP}:25000/v3
-      KEYSTONE_ADMIN_USER: 
-      KEYSTONE_ADMIN_PASSWORD: 
+      KEYSTONE_IDENTITY_URI: http://{keystone api ip}:{keystone port}/v3    # keystone(identity) api ip, port
+      KEYSTONE_AUTH_URI: http://{keystone api ip}:{keystone port}/v3        # keystone(identity) api ip, port
+      KEYSTONE_ADMIN_USER: admin                                            # openstack admin account
+      KEYSTONE_ADMIN_PASSWORD: password                                     # openstack admin password
     depends_on:
       - influxdb
 #      - keystone
@@ -307,11 +308,10 @@ services:
     ports:
       - "8070:8070"
     extra_hosts:
-      - "control:192.168.56.103"
-      - "compute:192.168.56.102"
-      - "compute2:192.168.56.101"
-      - "compute3:192.168.56.104"
-
+      - "control:192.168.56.103"      # openstack control node host:ip
+      - "compute:192.168.56.102"      # openstack compute node host:ip
+      - "compute2:192.168.56.101"     # openstack compute node host:ip
+      - "compute3:192.168.56.104"     # openstack compute node host:ip
   monasca-persister:
     image: monasca/persister:${MON_PERSISTER_VERSION}
     environment:
@@ -363,11 +363,10 @@ services:
 #      - keystone
       - monasca
     extra_hosts:
-        - "control:192.168.56.103"
-        - "compute:192.168.56.102"
-...
-        - "compute2:192.168.56.101"
-        - "compute3:192.168.56.104"
+      - "control:192.168.56.103"      # openstack control node host:ip
+      - "compute:192.168.56.102"      # openstack compute node host:ip
+      - "compute2:192.168.56.101"     # openstack compute node host:ip
+      - "compute3:192.168.56.104"     # openstack compute node host:ip
 
   grafana-init:
     image: monasca/grafana-init:${MON_GRAFANA_INIT_VERSION}
