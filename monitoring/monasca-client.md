@@ -59,17 +59,22 @@ Monasca Client 설치 가이드
 # 2.	Monasca Agent 설치 및 설정   <div id='2.'/>
 ## 2.1.	dependencies 설치   <div id='2.1.'/>
 ```
-$ sudo apt-get install python-pip
+$ sudo apt-get install python-pip3
 ```    
     
 ## 2.2.	monasca agent 설치   <div id='2.2.'/>
 ```
-$ sudo pip install monasca-agent[libvirt]==2.7.0
+$ sudo pip3 install monasca-agent==2.11.0
+...
+
+$ sudo pip3 install monasca-agent[libvirt]==2.11.0
+...
+
 ```
     
 ## 2.3.	설치확인   <div id='2.3.'/>
 ```
-$  sudo pip list |grep monasca-agent
+$  sudo pip3 list |grep monasca-agent
 ```
 
 ### 2.3.1. Reference : Cross-Project(Tenant) 사용자 추가 및 권한 부여  <div id='2.3.1.'/>
